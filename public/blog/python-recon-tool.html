@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Simple Recon Tool in Python - Mamdhooh Moomin Rasheed</title>
+    <meta name="description" content="A quick walkthrough of creating a lightweight recon script to automate subdomain discovery.">
+    <style>*{margin:0;padding:0;box-sizing:border-box}:root{--bg:#0a0a0a;--card:#1a1a1a;--text:#fff;--text-dim:#a0a0a0;--accent:#00ff88;--border:#2a2a2a}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(var(--accent) 1px,transparent 1px),linear-gradient(90deg,var(--accent) 1px,transparent 1px);background-size:50px 50px;opacity:.03;pointer-events:none;animation:grid 20s linear infinite}
+@keyframes grid{0%{transform:translate(0,0)}100%{transform:translate(50px,50px)}}
+nav{position:fixed;top:0;width:100%;background:rgba(10,10,10,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:1000;padding:1.5rem 2rem}
+.nav-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.5rem;font-weight:700;color:var(--accent);letter-spacing:-.5px;text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text-dim);text-decoration:none;font-weight:500;transition:color .3s}
+.nav-links a:hover{color:var(--accent)}
+.container{max-width:1400px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:80px}
+.hero-tag{display:inline-block;padding:.5rem 1rem;background:rgba(0,255,136,.1);border:1px solid var(--accent);border-radius:50px;color:var(--accent);font-size:.9rem;font-weight:600;margin-bottom:2rem}
+h1{font-size:clamp(3rem,8vw,6rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem;background:linear-gradient(135deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-description{font-size:1.3rem;color:var(--text-dim);margin-bottom:3rem;line-height:1.8}
+.cta-buttons{display:flex;gap:1rem;flex-wrap:wrap}
+.btn{padding:1rem 2rem;border-radius:12px;text-decoration:none;font-weight:600;transition:all .3s;display:inline-flex;align-items:center;gap:.5rem}
+.btn-primary{background:var(--accent);color:var(--bg);border:2px solid var(--accent)}
+.btn-primary:hover{background:transparent;color:var(--accent);transform:translateY(-2px);box-shadow:0 10px 40px rgba(0,255,136,.3)}
+.btn-secondary{background:transparent;color:var(--text);border:2px solid var(--border)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+section{padding:8rem 0}
+.section-header{text-align:center;margin-bottom:5rem}
+.section-tag{color:var(--accent);font-weight:600;font-size:.9rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem}
+h2{font-size:clamp(2.5rem,5vw,4rem);font-weight:800;margin-bottom:1rem}
+.section-description{font-size:1.2rem;color:var(--text-dim);max-width:600px;margin:0 auto}
+.expertise-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+.expertise-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2.5rem;transition:all .3s}
+.expertise-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 20px 60px rgba(0,255,136,.1)}
+.expertise-icon{font-size:3rem;margin-bottom:1.5rem}
+.expertise-card h3{font-size:1.5rem;margin-bottom:1rem}
+.expertise-card p{color:var(--text-dim);line-height:1.8}
+.skills-container{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;max-width:900px;margin:0 auto}
+.skill-tag{padding:.8rem 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:50px;font-weight:500;transition:all .3s}
+.skill-tag:hover{background:rgba(0,255,136,.1);border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:2rem}
+.blog-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .3s;text-decoration:none;color:inherit;display:block}
+.blog-card:hover{transform:translateY(-8px);border-color:var(--accent);box-shadow:0 20px 60px rgba(0,255,136,.15)}
+.blog-image{height:200px;background:linear-gradient(135deg,#1a1a1a 0%,#2a2a2a 100%);display:flex;align-items:center;justify-content:center;font-size:4rem;border-bottom:1px solid var(--border)}
+.blog-content{padding:2rem}
+.blog-meta{display:flex;gap:1rem;margin-bottom:1rem;font-size:.85rem;color:var(--text-dim)}
+.blog-tag-small{color:var(--accent);font-weight:600}
+.blog-card h3{font-size:1.4rem;margin-bottom:.8rem;line-height:1.3}
+.blog-excerpt{color:var(--text-dim);line-height:1.7;margin-bottom:1.5rem}
+.read-more{color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:.5rem}
+.contact-content{max-width:700px;margin:0 auto;text-align:center}
+.contact-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:3rem}
+.contact-link{display:flex;align-items:center;gap:.8rem;padding:1.2rem 2rem;background:var(--card);border:1px solid var(--border);border-radius:15px;color:var(--text);text-decoration:none;font-weight:600;transition:all .3s}
+.contact-link:hover{border-color:var(--accent);background:rgba(0,255,136,.05);transform:translateY(-3px);box-shadow:0 10px 40px rgba(0,255,136,.2)}
+footer{border-top:1px solid var(--border);padding:3rem 0;text-align:center;color:var(--text-dim)}
+.terminal{font-family:'Courier New',monospace;color:var(--accent);margin-bottom:1rem}
+.article{padding:10rem 0 5rem}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;color:var(--text-dim);text-decoration:none;margin-bottom:3rem;transition:color .3s}
+.back-link:hover{color:var(--accent)}
+.article-icon{font-size:5rem;margin-bottom:2rem}
+.article-meta{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-dim)}
+.article-category{color:var(--accent);font-weight:600}
+.article-content{font-size:1.1rem;line-height:1.9}
+.article-content h2{font-size:2rem;margin:3rem 0 1rem;color:var(--accent)}
+.article-content h3{font-size:1.5rem;margin:2rem 0 1rem}
+.article-content p{margin:1.5rem 0;color:var(--text-dim)}
+.article-content ul,.article-content ol{margin:1.5rem 0;padding-left:2rem}
+.article-content li{margin:.5rem 0;color:var(--text-dim)}
+.article-content code{background:var(--card);padding:.2rem .5rem;border-radius:4px;color:var(--accent);font-family:'Courier New',monospace}
+.article-content pre{background:var(--card);padding:1.5rem;border-radius:8px;overflow-x:auto;margin:1.5rem 0;border:1px solid var(--border)}
+.article-content pre code{background:none;padding:0}
+.article-content blockquote{border-left:4px solid var(--accent);padding-left:1.5rem;margin:1.5rem 0;font-style:italic;color:var(--text-dim)}
+@media(max-width:768px){nav{padding:1rem}.nav-links{gap:1rem;font-size:.9rem}section{padding:4rem 0}.expertise-grid,.blog-grid{grid-template-columns:1fr}.contact-links{flex-direction:column}}</style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    
+    <nav>
+        <div class="nav-content">
+            <a href="../index.html" class="logo">MR.</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../index.html#blog">Blog</a></li>
+                <li><a href="../index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <article class="article">
+            <a href="../index.html#blog" class="back-link">← Back to Blog</a>
+            <div class="article-icon">💻</div>
+            <div class="article-meta">
+                <span class="article-category">DEVELOPMENT</span>
+                <span>•</span>
+                <span>2025-10-11</span>
+                <span>•</span>
+                <span>5 min</span>
+            </div>
+            <h1>Building a Simple Recon Tool in Python</h1>
+            <div class="article-content"><h3>🐍 Python Recon Script</h3><pre><code>import requests
+from urllib.parse import urljoin
+
+target = 'https://example.com'
+wordlist = ['admin', 'login', 'test']
+
+for word in wordlist:
+    url = urljoin(target, word)
+    r = requests.get(url)
+    if r.status_code == 200:
+        print(f'[+] Found: {url}')</code></pre><p>This is a simple starting point you can expand with threading, error handling, and more sources.</p></div>
+        </article>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Mamdhooh Moomin Rasheed</p>
+        </div>
+    </footer>
+</body>
+</html>

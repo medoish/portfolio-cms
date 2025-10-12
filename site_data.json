@@ -1,0 +1,195 @@
+{
+  "site_info": {
+    "name": "Mamdhooh Moomin Rasheed",
+    "title": "Pentester & Developer",
+    "description": "Penetration tester and developer with a lifelong passion for breaking systems to build them better.",
+    "email": "contact@mamdhooh.com",
+    "twitter": "@moominrasheed",
+    "domain": "mamdhooh.com"
+  },
+  "hero": {
+    "tag": "\ud83d\udee1\ufe0f Security \u00b7 Development \u00b7 Innovation",
+    "title": "Mamdhooh Moomin Rasheed",
+    "description": "Penetration tester and developer with a lifelong passion for breaking systems to build them better. I find vulnerabilities, write code, and secure the digital world one exploit at a time."
+  },
+  "footer": {
+    "text": "\u00a9 2025 Mamdhooh Moomin Rasheed. Built for speed and security.",
+    "tagline": "root@mamdhooh:~$ whoami"
+  },
+  "expertise": [
+    {
+      "icon": "\ud83d\udd12",
+      "title": "Penetration Testing",
+      "description": "Comprehensive security assessments, vulnerability research, and exploit development. I think like an attacker to defend like a pro."
+    },
+    {
+      "icon": "\ud83d\udcbb",
+      "title": "Full-Stack Development",
+      "description": "Building secure, scalable applications from frontend to backend. Security-first development is not just a practice, it's a mindset."
+    },
+    {
+      "icon": "\ud83d\udd0d",
+      "title": "Security Research",
+      "description": "Discovering zero-days, analyzing attack vectors, and contributing to the security community with responsible disclosure."
+    },
+    {
+      "icon": "\u26a1",
+      "title": "DevSecOps",
+      "description": "Integrating security into every stage of development. Automation, CI/CD pipelines, and security tooling that scales."
+    },
+    {
+      "icon": "\ud83c\udfaf",
+      "title": "Red Team Operations",
+      "description": "Simulating real-world attacks to test defenses. Social engineering, network penetration, and physical security assessments."
+    },
+    {
+      "icon": "\ud83d\udee0\ufe0f",
+      "title": "Tool Development",
+      "description": "Creating custom security tools and automation scripts. If it doesn't exist, I'll build it myself."
+    }
+  ],
+  "skills": [
+    "Python",
+    "JavaScript",
+    "Go",
+    "Bash",
+    "React",
+    "Node.js",
+    "Burp Suite",
+    "Metasploit",
+    "Nmap",
+    "Wireshark",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "Linux",
+    "OWASP",
+    "Web Application Security",
+    "Network Security",
+    "Reverse Engineering",
+    "Binary Exploitation",
+    "API Security"
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "Hello World - A New Beginning",
+      "slug": "hello-world-a-new-beginning",
+      "excerpt": "An introduction to me, this blog, and what I\u2019ll be sharing here.",
+      "content": "### \ud83e\udde0 Welcome!\r\nI'm **Mamdhooh Moomin Rasheed**, a pentester and developer. This blog will be my space to share security research, development experiments, and personal insights. Let\u2019s build, break, and learn together \ud83d\ude80",
+      "category": "RED TEAM",
+      "icon": "\ud83c\udfaf",
+      "date": "2025-10-11",
+      "read_time": "1 min",
+      "published": true
+    },
+    {
+      "id": 2,
+      "title": "Top 5 Mistakes I See in Web App Security",
+      "slug": "web-app-security-mistakes",
+      "excerpt": "Common web security issues that keep showing up in audits \u2014 and how to fix them.",
+      "content": "### \ud83d\udd10 Top Web Security Mistakes\n1. **No input validation**\n2. **Broken authentication**\n3. **Missing security headers**\n4. **Hardcoded secrets**\n5. **Unrestricted file uploads**\n\nEach of these can be exploited easily, but they\u2019re also avoidable with proper testing and secure coding practices.",
+      "category": "SECURITY",
+      "icon": "\ud83d\udd12",
+      "date": "2025-10-11",
+      "read_time": "3 min",
+      "published": true
+    },
+    {
+      "id": 3,
+      "title": "How I Approach a Pentest \u2014 Step by Step",
+      "slug": "pentest-approach",
+      "excerpt": "A structured methodology I use when performing penetration tests.",
+      "content": "### \ud83e\udde0 My Pentesting Flow\n1. **Reconnaissance** \u2014 Passive & active\n2. **Mapping the surface** \u2014 Enumerating endpoints, services\n3. **Vulnerability discovery** \u2014 Manual & automated\n4. **Exploitation & escalation**\n5. **Reporting** \u2014 Clear, actionable, client-friendly\n\nMethod beats chaos every time.",
+      "category": "SECURITY",
+      "icon": "\ud83e\udde0",
+      "date": "2025-10-11",
+      "read_time": "4 min",
+      "published": true
+    },
+    {
+      "id": 4,
+      "title": "Building a Simple Recon Tool in Python",
+      "slug": "python-recon-tool",
+      "excerpt": "A quick walkthrough of creating a lightweight recon script to automate subdomain discovery.",
+      "content": "### \ud83d\udc0d Python Recon Script\n```python\nimport requests\nfrom urllib.parse import urljoin\n\ntarget = 'https://example.com'\nwordlist = ['admin', 'login', 'test']\n\nfor word in wordlist:\n    url = urljoin(target, word)\n    r = requests.get(url)\n    if r.status_code == 200:\n        print(f'[+] Found: {url}')\n```\nThis is a simple starting point you can expand with threading, error handling, and more sources.",
+      "category": "DEVELOPMENT",
+      "icon": "\ud83d\udcbb",
+      "date": "2025-10-11",
+      "read_time": "5 min",
+      "published": true
+    },
+    {
+      "id": 5,
+      "title": "My Favorite Bug Bounty Tips",
+      "slug": "bug-bounty-tips",
+      "excerpt": "Hard-earned advice from real bug bounty experience.",
+      "content": "### \ud83e\udeb2 Tips That Actually Work\n- Focus on **logic bugs**, not just scanners.\n- Read program **scope carefully**.\n- Take detailed notes.\n- Report clearly \u2014 make it easy for triagers.\n\nBug bounty isn\u2019t just luck \u2014 it\u2019s strategy and persistence.",
+      "category": "SECURITY",
+      "icon": "\ud83e\udeb2",
+      "date": "2025-10-11",
+      "read_time": "3 min",
+      "published": true
+    },
+    {
+      "id": 6,
+      "title": "Why Developers Should Think Like Hackers",
+      "slug": "think-like-hacker",
+      "excerpt": "A mindset shift that improves security from the start.",
+      "content": "### \ud83e\udde0 Think Offensively\nWhen developers understand how attackers think, they naturally build stronger defenses. Learn basic exploitation techniques to better protect what you create.",
+      "category": "INSIGHT",
+      "icon": "\ud83e\udde0",
+      "date": "2025-10-11",
+      "read_time": "2 min",
+      "published": true
+    },
+    {
+      "id": 7,
+      "title": "Securing APIs \u2014 Beyond the Basics",
+      "slug": "api-security-basics",
+      "excerpt": "APIs are often the weakest link. Here\u2019s how to lock them down.",
+      "content": "### \ud83d\udd10 Key API Security Practices\n- Strong authentication & authorization\n- Input validation everywhere\n- Rate limiting & logging\n- Avoid overexposing data\n\nAPIs deserve the same scrutiny as any front-end.",
+      "category": "SECURITY",
+      "icon": "\ud83d\udd11",
+      "date": "2025-10-11",
+      "read_time": "4 min",
+      "published": true
+    },
+    {
+      "id": 8,
+      "title": "The Tools I Use Daily as a Pentester",
+      "slug": "pentester-tools",
+      "excerpt": "My go-to toolkit for offensive security work.",
+      "content": "### \ud83e\uddee Daily Tools\n- **Burp Suite** \u2014 Web proxy and testing powerhouse\n- **nmap** \u2014 Network discovery\n- **ffuf** \u2014 Fuzzing for hidden content\n- **Python & Bash** \u2014 Scripting glue\n\nTools are nothing without strategy, but they make life easier.",
+      "category": "SECURITY",
+      "icon": "\ud83e\uddee",
+      "date": "2025-10-11",
+      "read_time": "3 min",
+      "published": true
+    },
+    {
+      "id": 9,
+      "title": "Automating Security Checks in CI/CD",
+      "slug": "security-ci-cd",
+      "excerpt": "Integrating security tools into your development pipeline.",
+      "content": "### \u26a1 Shift Left\nAdding SAST, DAST, and dependency checks early in your pipeline helps catch vulnerabilities before deployment. Security should be part of the build, not an afterthought.",
+      "category": "DEVELOPMENT",
+      "icon": "\u2699\ufe0f",
+      "date": "2025-10-11",
+      "read_time": "4 min",
+      "published": true
+    },
+    {
+      "id": 10,
+      "title": "What I\u2019ve Learned from Breaking Things",
+      "slug": "lessons-from-breaking",
+      "excerpt": "Pentesting teaches more than exploits \u2014 it\u2019s about curiosity, persistence, and respect.",
+      "content": "### \ud83d\udcad Reflections\nEvery system has a story. Breaking it is about understanding it deeply. The more I hack, the more I learn \u2014 not just about code, but about human decisions behind it.",
+      "category": "PERSONAL",
+      "icon": "\ud83d\udcad",
+      "date": "2025-10-11",
+      "read_time": "3 min",
+      "published": true
+    }
+  ]
+}
