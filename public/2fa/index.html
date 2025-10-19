@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Authenticator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding-top: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .timer-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 1s linear;
+            border-radius: 10px;
+        }
+
+        .timer-text {
+            text-align: center;
+            color: white;
+            margin-top: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .add-button {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .add-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .account-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .account-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .account-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .code-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .code {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        .secret-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .secret-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .secret-text.hidden {
+            filter: blur(6px);
+            user-select: none;
+        }
+
+        .toggle-secret-btn {
+            background: #e5e7eb;
+            border: none;
+            color: #6b7280;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toggle-secret-btn:hover {
+            background: #d1d5db;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 2FA Authenticator</h1>
+            <p>Secure two-factor authentication codes</p>
+        </div>
+
+        <div class="timer-bar">
+            <div class="timer-fill" id="timerFill"></div>
+        </div>
+        <div class="timer-text" id="timerText">30s</div>
+
+        <button class="add-button" onclick="showAddModal()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Add Account
+        </button>
+
+        <div class="accounts-list" id="accountsList"></div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">🔑</div>
+            <div class="empty-state-text">No accounts added yet. Click "Add Account" to get started!</div>
+        </div>
+    </div>
+
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">Add New Account</div>
+            <div class="form-group">
+                <label class="form-label">Account Name</label>
+                <input type="text" class="form-input" id="accountName" placeholder="e.g., Google, GitHub">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Secret Key</label>
+                <input type="text" class="form-input" id="secretKey" placeholder="Enter your secret key">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="hideAddModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addAccount()">Add Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let accounts = [];
+        let codes = {};
+        let showSecrets = {};
+
+        function loadAccounts() {
+            const saved = localStorage.getItem('2fa_accounts');
+            if (saved) {
+                accounts = JSON.parse(saved);
+            }
+            updateUI();
+        }
+
+        function saveAccounts() {
+            localStorage.setItem('2fa_accounts', JSON.stringify(accounts));
+        }
+
+        function base32Decode(base32) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            let bits = '';
+            let output = [];
+
+            base32 = base32.toUpperCase().replace(/=+$/g, '');
+
+            for (let i = 0; i < base32.length; i++) {
+                const val = alphabet.indexOf(base32[i]);
+                if (val === -1) continue;
+                bits += val.toString(2).padStart(5, '0');
+            }
+
+            for (let i = 0; i + 8 <= bits.length; i += 8) {
+                output.push(parseInt(bits.substr(i, 8), 2));
+            }
+
+            return new Uint8Array(output);
+        }
+
+        async function generateHOTP(secret, counter) {
+            const key = base32Decode(secret);
+            const buffer = new ArrayBuffer(8);
+            const view = new DataView(buffer);
+            view.setBigUint64(0, BigInt(counter), false);
+
+            const cryptoKey = await crypto.subtle.importKey(
+                'raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']
+            );
+
+            const signature = await crypto.subtle.sign('HMAC', cryptoKey, buffer);
+            const signatureArray = new Uint8Array(signature);
+            
+            const offset = signatureArray[signatureArray.length - 1] & 0xf;
+            const binary = 
+                ((signatureArray[offset] & 0x7f) << 24) |
+                ((signatureArray[offset + 1] & 0xff) << 16) |
+                ((signatureArray[offset + 2] & 0xff) << 8) |
+                (signatureArray[offset + 3] & 0xff);
+
+            const otp = binary % 1000000;
+            return otp.toString().padStart(6, '0');
+        }
+
+        async function generateTOTP(secret) {
+            const timeStep = 30;
+            const counter = Math.floor(Date.now() / 1000 / timeStep);
+            return await generateHOTP(secret, counter);
+        }
+
+        function getTimeRemaining() {
+            const timeStep = 30;
+            const currentSeconds = Math.floor(Date.now() / 1000);
+            return timeStep - (currentSeconds % timeStep);
+        }
+
+        async function updateCodes() {
+            for (const account of accounts) {
+                try {
+                    codes[account.id] = await generateTOTP(account.secret);
+                } catch (error) {
+                    codes[account.id] = 'ERROR';
+                }
+            }
+            updateUI();
+        }
+
+        function updateTimer() {
+            const remaining = getTimeRemaining();
+            const progress = (remaining / 30) * 100;
+            
+            document.getElementById('timerFill').style.width = progress + '%';
+            document.getElementById('timerText').textContent = remaining + 's';
+
+            if (remaining === 30) {
+                updateCodes();
+            }
+        }
+
+        function updateUI() {
+            const list = document.getElementById('accountsList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (accounts.length === 0) {
+                list.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            list.innerHTML = accounts.map(account => `
+                <div class="account-card">
+                    <div class="account-header">
+                        <div class="account-name">${escapeHtml(account.name)}</div>
+                        <button class="delete-btn" onclick="deleteAccount(${account.id})">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="code-display">
+                        <div class="code">${codes[account.id] || '------'}</div>
+                        <button class="copy-btn" id="copy-${account.id}" onclick="copyCode('${codes[account.id]}', ${account.id})">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="secret-display">
+                        <div class="secret-text ${showSecrets[account.id] ? '' : 'hidden'}">${escapeHtml(account.secret)}</div>
+                        <button class="toggle-secret-btn" onclick="toggleSecret(${account.id})">
+                            ${showSecrets[account.id] ? 
+                                '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>' : 
+                                '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>'
+                            }
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showAddModal() {
+            document.getElementById('addModal').classList.add('show');
+            document.getElementById('accountName').value = '';
+            document.getElementById('secretKey').value = '';
+        }
+
+        function hideAddModal() {
+            document.getElementById('addModal').classList.remove('show');
+        }
+
+        async function addAccount() {
+            const name = document.getElementById('accountName').value.trim();
+            const secret = document.getElementById('secretKey').value.replace(/\s/g, '').toUpperCase();
+
+            if (!name || !secret) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                await generateTOTP(secret);
+                const account = {
+                    id: Date.now(),
+                    name: name,
+                    secret: secret
+                };
+                accounts.push(account);
+                saveAccounts();
+                await updateCodes();
+                hideAddModal();
+            } catch (error) {
+                alert('Invalid secret key. Please check and try again.');
+            }
+        }
+
+        function deleteAccount(id) {
+            if (confirm('Delete this account?')) {
+                accounts = accounts.filter(acc => acc.id !== id);
+                delete codes[id];
+                delete showSecrets[id];
+                saveAccounts();
+                updateUI();
+            }
+        }
+
+        function copyCode(code, id) {
+            navigator.clipboard.writeText(code);
+            const btn = document.getElementById('copy-' + id);
+            btn.classList.add('copied');
+            btn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>';
+            }, 2000);
+        }
+
+        function toggleSecret(id) {
+            showSecrets[id] = !showSecrets[id];
+            updateUI();
+        }
+
+        loadAccounts();
+        updateCodes();
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
